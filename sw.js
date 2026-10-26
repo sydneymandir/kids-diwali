@@ -1,6 +1,6 @@
 // Saves the Kids Diwali guide on the visitor's phone the first time it opens,
 // so it keeps working with no signal at all on the day.
-const CACHE = 'kids-diwali-v3';            // bump this when content changes
+const CACHE = 'kids-diwali-v4';            // bump this when content changes
 const CORE  = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png',
                './kdc-logo.webp', './baps-logo.webp', './hero-fireworks.webp'];
 // sharper zoom map and photos: fetched in the background, never block the guide

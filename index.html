@@ -165,6 +165,56 @@ header.top h1{font-size:1.1rem;flex:1;min-width:0;white-space:nowrap;overflow:hi
 .head h2{margin:0}
 footer{padding-block:26px 44px;display:flex;gap:12px;align-items:center;color:var(--muted);font-size:.82rem}
 footer img{height:40px;width:auto;opacity:.8}
+/* ===== Phone-friendly additions: full-screen map, thumb bars, tap feedback ===== */
+button,a,.pin{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.mapopen{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;flex:none}
+.mapopen svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.mapscroll img{cursor:zoom-in}
+.fsui{display:none}
+.fslock,.fslock body{overflow:hidden;overscroll-behavior:none}
+.mapwrap.fs{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;background:#26232e}
+.mapwrap.fs .mapscroll{flex:1;display:flex;overflow:auto;border:0;touch-action:pan-x pan-y;overscroll-behavior:contain;scroll-behavior:auto;background:#26232e}
+.mapwrap.fs .mapinner{height:var(--fsh,500px);margin:auto;flex:none}
+.mapwrap.fs .mapscroll img{cursor:grab}
+.mapwrap.fs .compass{top:calc(env(safe-area-inset-top,0px) + 64px);right:max(12px,env(safe-area-inset-right,0px))}
+.mapwrap.fs .fsui{display:block}
+.fsbar{position:absolute;left:0;right:0;top:0;z-index:3;display:flex;align-items:center;gap:8px;padding:calc(env(safe-area-inset-top,0px) + 8px) max(10px,env(safe-area-inset-right,0px)) 8px max(10px,env(safe-area-inset-left,0px));background:linear-gradient(rgba(20,17,30,.82),rgba(20,17,30,0));pointer-events:none}
+.fsbar>*{pointer-events:auto}
+.fsbtn{width:48px;height:48px;border-radius:50%;border:0;background:rgba(255,255,255,.96);color:#1E1A2B;display:grid;place-items:center;box-shadow:0 2px 8px rgba(0,0,0,.35);flex:none}
+.fsbtn svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2.4;stroke-linecap:round}
+.fsbtn:active{transform:scale(.94)}
+.fsbar .fstitle{color:#fff;font-weight:800;font-size:1rem;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 1px 3px rgba(0,0,0,.6)}
+.fszoom{position:absolute;right:max(12px,env(safe-area-inset-right,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 16px);z-index:3;display:grid;gap:10px}
+.fscard[hidden]{display:none!important}
+.fscard{position:absolute;left:max(10px,env(safe-area-inset-left,0px));right:calc(max(12px,env(safe-area-inset-right,0px)) + 60px);bottom:calc(env(safe-area-inset-bottom,0px) + 14px);z-index:3;border-radius:16px;padding:12px 14px;display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start;box-shadow:0 6px 24px rgba(0,0,0,.45)}
+.fscard h3{font-size:1.05rem;margin:0}
+.fscard p{margin:2px 0 6px;font-size:.88rem}
+.fshint{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 76px);transform:translateX(-50%);z-index:2;width:max-content;max-width:calc(100% - 120px);text-align:center;background:rgba(20,17,30,.82);color:#fff;font-size:.8rem;line-height:1.35;padding:6px 12px;border-radius:14px;pointer-events:none;transition:opacity .6s}
+.fshint.gone{opacity:0}
+.mapwrap.fs .chip{font-size:.78rem}
+@media (prefers-reduced-motion:reduce){.fshint{transition:none}}
+
+/* kids diwali: bottom tab bar, card in the full map, short header title, tap feedback */
+#homeView{padding-bottom:80px}
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:7;background:rgba(20,17,46,.97);backdrop-filter:blur(8px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+.tabbar .in{display:grid;grid-template-columns:repeat(4,1fr);max-width:680px;margin:0 auto;padding-left:max(8px,env(safe-area-inset-left,0px));padding-right:max(8px,env(safe-area-inset-right,0px))}
+.tabbar button{border:0;background:none;color:var(--muted);display:grid;justify-items:center;align-content:center;gap:3px;min-height:58px;font-size:.74rem;font-weight:700;border-radius:12px}
+.tabbar svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.tabbar button[aria-current="true"]{color:var(--gold)}
+.tabbar button:active{background:var(--panel)}
+.section,#mapTop,.hero{scroll-margin-top:64px}
+.fscard{background:var(--panel);border:1px solid var(--line);color:var(--ink)}
+.fscard p{color:var(--muted)}
+.fsfilters{position:absolute;left:0;right:0;top:calc(env(safe-area-inset-top,0px) + 62px);z-index:3;padding-left:max(10px,env(safe-area-inset-left,0px))}
+.fsfilters .filters{padding:0 10px 0 0}
+.fsfilters .fchip{box-shadow:0 2px 8px rgba(0,0,0,.35)}
+.mapwrap.fs .compass{top:calc(env(safe-area-inset-top,0px) + 118px)}
+.pin::before{content:"";position:absolute;inset:-8px}
+.btn:active,.qbtn:active,.fchip:active,.hbtn:active,.cats button:active{transform:scale(.97)}
+.ts{display:none}
+@media (max-width:440px){.tl{display:none}.ts{display:inline}}
+@media (max-width:440px){header.top img{display:none}header.top h1{font-size:1.05rem}}
+.mapwrap.fs .fshint{top:calc(env(safe-area-inset-top,0px) + 126px)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 
 /* language chooser */
@@ -185,7 +235,7 @@ footer img{height:40px;width:auto;opacity:.8}
 
 <header class="top"><div class="wrap">
   <img src="baps-logo.webp" alt="BAPS" width="80" height="98" onerror="this.hidden=true">
-  <h1 data-t="title">Kids Diwali Celebration</h1>
+  <h1><span class="tl" data-t="title">Kids Diwali Celebration</span><span class="ts" data-t="titleShort">Kids Diwali 2026</span></h1>
   <span class="net" id="net">Ready offline</span>
   <button class="hbtn" id="langBtn" aria-label="Language"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg><span id="langShort">EN</span></button>
   <button class="hbtn" id="textBtn" aria-label="Larger text">A+</button>
@@ -240,7 +290,7 @@ footer img{height:40px;width:auto;opacity:.8}
 
   <div class="wrap mapbar">
     <span class="eyebrow" data-t="mapLabel">Event map · scroll sideways</span>
-    <button class="btn small" id="zoomBtn">Zoom in</button>
+    <button class="btn small" id="zoomBtn" hidden>Zoom in</button><button class="btn small mapopen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><span data-t="fullMap">Full map</span></button>
   </div>
   <div class="mapwrap" id="mapTop">
     <div class="mapscroll" id="mapScroll">
@@ -251,7 +301,16 @@ footer img{height:40px;width:auto;opacity:.8}
         </div>
       </div>
     </div>
-    <div class="compass" aria-hidden="true"><svg viewBox="0 0 30 30"><g transform="rotate(20 15 15)"><path d="M15 3 20 17H10z" fill="#E8336E"/><path d="M15 27 20 17H10z" fill="#B9B1C8"/><text x="15" y="16.5" text-anchor="middle" font-size="7" font-weight="700" fill="#fff" font-family="system-ui,sans-serif">N</text></g></svg></div>
+    <div class="compass" aria-hidden="true"><svg viewBox="0 0 30 30"><g transform="rotate(20 15 15)"><path d="M15 3 20 17H10z" fill="#E8336E"/><path d="M15 27 20 17H10z" fill="#B9B1C8"/><text x="15" y="16.5" text-anchor="middle" font-size="7" font-weight="700" fill="#fff" font-family="system-ui,sans-serif">N</text></g></svg>
+</div>
+  <div class="fsui">
+    <div class="fsbar"><button class="fsbtn fsclose" aria-label="Close map"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button><span class="fstitle" data-t="title"></span></div>
+    <div class="fszoom"><button class="fsbtn fsin" aria-label="Zoom in"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button><button class="fsbtn fsout" aria-label="Zoom out"><svg viewBox="0 0 24 24"><path d="M5 12h14"/></svg></button></div>
+    <div class="fsfilters" id="fsFilters"></div>
+    <div class="fscard" id="fsCard" hidden><span class="badge" id="fsBadge"></span><div><h3 id="fsName"></h3><p id="fsDesc"></p><button class="btn small" data-say="fs" aria-pressed="false">▶ Listen</button></div></div>
+    <div class="fshint gone" data-t="fsHint"></div>
+  </div>
+
   </div>
   <div class="wrap">
     <div class="filters" id="filters" role="toolbar"></div>
@@ -289,6 +348,12 @@ footer img{height:40px;width:auto;opacity:.8}
   </section>
 
   <footer class="wrap"><img src="baps-logo.webp" alt="" width="80" height="98" onerror="this.hidden=true"><span data-t="foot"></span></footer>
+  <nav class="tabbar" aria-label="Sections"><div class="in">
+    <button data-tab="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11 12 4l9 7M5 10v10h5v-6h4v6h5V10"/></svg><span data-t="tabHome">Home</span></button>
+    <button data-tab="map"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2zM9 4v14M15 6v14"/></svg><span data-t="tabMap">Map</span></button>
+    <button data-tab="places"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01"/></svg><span data-t="tabPlaces">Places</span></button>
+    <button data-tab="help"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4 6v6c0 5 3.4 8 8 9 4.6-1 8-4 8-9V6z"/><path d="M12 8v5M12 16h.01"/></svg><span data-t="tabHelp">Safety</span></button>
+  </div></nav>
 </main>
 
 <script>
@@ -324,7 +389,7 @@ en:{
     noSpeech:"Read-aloud is not available on this phone", noVoice:"This phone has no English voice installed",
     details:"Event details", whenL:"When", whereL:"Where", feeL:"Entry", contactL:"Contact",
     whenV:"Saturday 31 October 2026, from 1:00 pm", feeV:"$5 adults · $5 children", copy:"Copy", copied:"Copied",
-    quick:"Find quickly", mapLabel:"Event map · scroll sideways", zoomIn:"Zoom in", zoomOut:"Zoom out",
+    quick:"Find quickly", mapLabel:"Event map", fullMap:"Full map", fsHint:"Pinch or double-tap to zoom", tabHome:"Home", tabMap:"Map", tabPlaces:"Places", tabHelp:"Safety", titleShort:"Kids Diwali 2026", zoomIn:"Zoom in", zoomOut:"Zoom out",
     showAll:"Show all", places:"{n} places", place:"1 place", seeOnMap:"See on the map",
     expect:"What to expect", expectNote:"Attractions vary by centre and may change on the day.",
     whatsOn:"Everything at the celebration",
@@ -386,7 +451,7 @@ hi:{
     noSpeech:"इस फ़ोन पर सुनने की सुविधा उपलब्ध नहीं है", noVoice:"इस फ़ोन में हिंदी आवाज़ उपलब्ध नहीं है",
     details:"कार्यक्रम का विवरण", whenL:"कब", whereL:"कहाँ", feeL:"प्रवेश शुल्क", contactL:"संपर्क",
     whenV:"शनिवार 31 अक्टूबर 2026, दोपहर 1:00 बजे से", feeV:"वयस्क $5 · बच्चे $5", copy:"कॉपी करें", copied:"कॉपी हो गया",
-    quick:"जल्दी खोजें", mapLabel:"उत्सव का मानचित्र · दाएँ-बाएँ खिसकाएँ", zoomIn:"बड़ा करें", zoomOut:"छोटा करें",
+    quick:"जल्दी खोजें", mapLabel:"उत्सव का मानचित्र", fullMap:"पूरा मानचित्र", fsHint:"ज़ूम के लिए दो उँगलियों से फैलाएँ या दो बार टैप करें", tabHome:"होम", tabMap:"मानचित्र", tabPlaces:"स्थान", tabHelp:"सुरक्षा", titleShort:"किड्स दिवाली 2026", zoomIn:"बड़ा करें", zoomOut:"छोटा करें",
     showAll:"सब दिखाएँ", places:"{n} स्थान", place:"1 स्थान", seeOnMap:"मानचित्र पर देखें",
     expect:"क्या-क्या होगा", expectNote:"आकर्षण हर केंद्र पर अलग हो सकते हैं और उस दिन बदल भी सकते हैं।",
     whatsOn:"उत्सव में सब कुछ",
@@ -448,7 +513,7 @@ gu:{
     noSpeech:"આ ફોન પર સાંભળવાની સુવિધા ઉપલબ્ધ નથી", noVoice:"આ ફોનમાં ગુજરાતી અવાજ ઉપલબ્ધ નથી",
     details:"કાર્યક્રમની વિગતો", whenL:"ક્યારે", whereL:"ક્યાં", feeL:"પ્રવેશ ફી", contactL:"સંપર્ક",
     whenV:"શનિવાર 31 ઑક્ટોબર 2026, બપોરે 1:00 વાગ્યાથી", feeV:"મોટાઓ $5 · બાળકો $5", copy:"કૉપી કરો", copied:"કૉપી થયું",
-    quick:"ઝડપથી શોધો", mapLabel:"ઉત્સવનો નકશો · બાજુમાં સરકાવો", zoomIn:"મોટું કરો", zoomOut:"નાનું કરો",
+    quick:"ઝડપથી શોધો", mapLabel:"ઉત્સવનો નકશો", fullMap:"આખો નકશો", fsHint:"ઝૂમ કરવા બે આંગળીથી પહોળું કરો અથવા બે વાર ટૅપ કરો", tabHome:"હોમ", tabMap:"નકશો", tabPlaces:"સ્થળો", tabHelp:"સલામતી", titleShort:"કિડ્સ દિવાળી 2026", zoomIn:"મોટું કરો", zoomOut:"નાનું કરો",
     showAll:"બધું બતાવો", places:"{n} સ્થાન", place:"1 સ્થાન", seeOnMap:"નકશા પર જુઓ",
     expect:"શું શું હશે", expectNote:"આકર્ષણો દરેક કેન્દ્રે જુદાં હોઈ શકે અને તે દિવસે બદલાઈ પણ શકે.",
     whatsOn:"ઉત્સવમાં બધું",
@@ -510,7 +575,7 @@ ne:{
     noSpeech:"यो फोनमा सुन्ने सुविधा उपलब्ध छैन", noVoice:"यो फोनमा नेपाली आवाज उपलब्ध छैन",
     details:"कार्यक्रमको विवरण", whenL:"कहिले", whereL:"कहाँ", feeL:"प्रवेश शुल्क", contactL:"सम्पर्क",
     whenV:"शनिबार 31 अक्टोबर 2026, दिउँसो 1:00 बजेदेखि", feeV:"वयस्क $5 · बालबालिका $5", copy:"कपी गर्नुहोस्", copied:"कपी भयो",
-    quick:"छिटो खोज्नुहोस्", mapLabel:"उत्सवको नक्सा · दायाँ-बायाँ सार्नुहोस्", zoomIn:"ठूलो पार्नुहोस्", zoomOut:"सानो पार्नुहोस्",
+    quick:"छिटो खोज्नुहोस्", mapLabel:"उत्सवको नक्सा", fullMap:"पूरा नक्सा", fsHint:"जुम गर्न दुई औँलाले फैलाउनुहोस् वा दुई पटक ट्याप गर्नुहोस्", tabHome:"गृह", tabMap:"नक्सा", tabPlaces:"स्थानहरू", tabHelp:"सुरक्षा", titleShort:"किड्स दिवाली 2026", zoomIn:"ठूलो पार्नुहोस्", zoomOut:"सानो पार्नुहोस्",
     showAll:"सबै देखाउनुहोस्", places:"{n} स्थान", place:"1 स्थान", seeOnMap:"नक्सामा हेर्नुहोस्",
     expect:"के-के हुनेछ", expectNote:"आकर्षणहरू केन्द्रअनुसार फरक हुन सक्छन् र त्यस दिन परिवर्तन पनि हुन सक्छन्।",
     whatsOn:"उत्सवमा सबै कुरा",
@@ -656,7 +721,7 @@ function select(id,scrollPage,silent){
   const map=$("map"); map.classList.toggle("filtering",!!sel);
   document.querySelectorAll(".pin").forEach(p=>p.classList.toggle("on",p.dataset.id===sel));
   document.querySelectorAll(".fchip,.qbtn").forEach(b=>b.setAttribute("aria-pressed",String((b.dataset.id||null)===sel)));
-  if(!sel){ $("sel").hidden=true; if(!silent) setHash(""); return }
+  if(!sel){ $("sel").hidden=true; $("fsCard").hidden=true; if(!silent) setHash(""); return }
   const c=EVENT.cats.find(x=>x.id===sel), t=cat(sel);
   $("selBadge").className="badge "+(c.kind||""); $("selBadge").textContent=c.label;
   $("selName").textContent=t.name; $("selDesc").textContent=t.desc;
@@ -668,6 +733,7 @@ function select(id,scrollPage,silent){
   if(silent) return;
   const sc=$("mapScroll"), xs=c.pins.map(p=>p[0]), mid=(Math.min(...xs)+Math.max(...xs))/2;
   sc.scrollLeft=mid/MAPW*map.clientWidth-sc.clientWidth/2;
+  if(FS.on){const ys=c.pins.map(p=>p[1]);sc.scrollTop=(Math.min(...ys)+Math.max(...ys))/2/MAPH*map.clientHeight-sc.clientHeight/2;fsCardShow();return}
   if(scrollPage) $("mapTop").scrollIntoView({block:"start",behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
   setHash(sel);
 }
@@ -705,7 +771,7 @@ function sayText(kind){
   if(kind==="welcome") return [ui("eventName"),ui("theme"),ui("whenV"),ui("whereL")+": "+EVENT_INFO.address,ui("feeL")+": "+ui("feeV"),ui("fwL")+": "+ui("fwV"),ui("about")].map(end).join(" ");
   if(kind==="safety") return [ui("safety"),ui("safe1"),ui("safe2"),ui("safe3"),ui("safe4")].map(end).join(" ");
   if(kind==="about") return [ui("aboutT"),ui("about"),ui("whoT"),ui("who")].map(end).join(" ");
-  if(kind==="sel"&&sel){const t=cat(sel);return [t.name,t.desc].map(end).join(" ")}
+  if((kind==="sel"||kind==="fs")&&sel){const t=cat(sel);return [t.name,t.desc].map(end).join(" ")}
   return "";
 }
 function speak(btn){
@@ -755,8 +821,79 @@ addEventListener("hashchange",()=>{const h=location.hash.slice(1); if(EVENT.cats
 
 if("serviceWorker" in navigator && location.protocol==="https:"){try{navigator.serviceWorker.register("sw.js").catch(()=>{})}catch(e){}}
 
+/* ===== Full-screen map: drag to move, pinch / double-tap / + − to zoom, phone Back closes it ===== */
+const FS={on:false,h:0,skipPop:false};
+const mapWrap=document.querySelector(".mapwrap"), mapSc=$("mapScroll");
+let wakeLock=null;
+async function keepAwake(){try{if(navigator.wakeLock&&!wakeLock){wakeLock=await navigator.wakeLock.request("screen");wakeLock.addEventListener("release",()=>{wakeLock=null})}}catch(e){}}
+document.addEventListener("visibilitychange",()=>{if(!document.hidden&&(FS.on||window.__keepAwake))keepAwake()});
+function fsBounds(){const vw=mapSc.clientWidth||innerWidth, vh=mapSc.clientHeight||innerHeight;return{vw,vh,min:Math.min(vh,vw*MAPH/MAPW),max:MAPH}}
+function fsZoomImg(){if(zoomLoaded)return;const img=$("mapImg"),z=new Image();z.onload=()=>{img.src=z.src;zoomLoaded=true};z.src=img.dataset.zoom}
+function setFsH(h,fx,fy){
+  const b=fsBounds(); h=Math.max(b.min,Math.min(b.max,h));
+  const old=FS.h||h, k=h/old, sl=mapSc.scrollLeft, st=mapSc.scrollTop;
+  fx=fx??b.vw/2; fy=fy??b.vh/2;
+  FS.h=h; mapWrap.style.setProperty("--fsh",h+"px");
+  mapSc.scrollLeft=(sl+fx)*k-fx; mapSc.scrollTop=(st+fy)*k-fy;
+  $("map").classList.toggle("zoomed",h>=420);
+  if(h>460) fsZoomImg();
+}
+function fsCenter(x,y){const m=$("map");mapSc.scrollLeft=x/MAPW*m.clientWidth-mapSc.clientWidth/2;mapSc.scrollTop=y/MAPH*m.clientHeight-mapSc.clientHeight/2}
+function fsEnter(pt){
+  if(FS.on) return;
+  const m=$("map"), rx=pt?pt[0]:(mapSc.scrollLeft+mapSc.clientWidth/2)/m.clientWidth*MAPW, ry=pt?pt[1]:MAPH/2;
+  FS.on=true; FS.h=0; mapWrap.classList.add("fs"); document.documentElement.classList.add("fslock");
+  try{history.pushState({fs:1},"")}catch(e){}
+  setFsH(fsBounds().vh*(pt?1.25:1)); fsCenter(rx,ry);
+  const hint=mapWrap.querySelector(".fshint"); if(hint){hint.classList.remove("gone");clearTimeout(FS.ht);FS.ht=setTimeout(()=>hint.classList.add("gone"),3500)}
+  if(typeof fsOnEnter==="function") fsOnEnter();
+  keepAwake();
+}
+function fsExit(fromPop){
+  if(!FS.on) return;
+  const m=$("map"), rx=(mapSc.scrollLeft+mapSc.clientWidth/2)/m.clientWidth;
+  FS.on=false; mapWrap.classList.remove("fs"); document.documentElement.classList.remove("fslock");
+  $("map").classList.toggle("zoomed",typeof zoomed!=="undefined"&&zoomed);
+  mapSc.scrollTop=0; mapSc.scrollLeft=rx*m.clientWidth-mapSc.clientWidth/2;
+  if(typeof fsOnExit==="function") fsOnExit();
+  if(!fromPop){FS.skipPop=true;try{history.back()}catch(e){FS.skipPop=false}}
+}
+function fsPop(){if(FS.skipPop){FS.skipPop=false;return true} if(FS.on){fsExit(true);return true} return false}
+/* pinch to zoom (two fingers); one-finger drag is the phone's own smooth scrolling */
+let pz=null;
+mapSc.addEventListener("touchstart",e=>{if(FS.on&&e.touches.length===2){const[a,b]=e.touches;pz={d:Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY)||1,h:FS.h}}},{passive:true});
+mapSc.addEventListener("touchmove",e=>{if(!pz||e.touches.length!==2)return;e.preventDefault();const[a,b]=e.touches,r=mapSc.getBoundingClientRect();setFsH(pz.h*Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY)/pz.d,(a.clientX+b.clientX)/2-r.left,(a.clientY+b.clientY)/2-r.top)},{passive:false});
+mapSc.addEventListener("touchend",e=>{if(e.touches.length<2)pz=null},{passive:true});
+mapSc.addEventListener("wheel",e=>{if(!FS.on||!e.ctrlKey)return;e.preventDefault();const r=mapSc.getBoundingClientRect();setFsH(FS.h*Math.exp(-e.deltaY*.01),e.clientX-r.left,e.clientY-r.top)},{passive:false});
+mapSc.addEventListener("dblclick",e=>{if(!FS.on||e.target.closest(".pin"))return;const r=mapSc.getBoundingClientRect();setFsH(FS.h*1.8,e.clientX-r.left,e.clientY-r.top)});
+$("mapImg").addEventListener("click",e=>{if(!FS.on){const m=$("map").getBoundingClientRect();fsEnter([(e.clientX-m.left)/m.width*MAPW,(e.clientY-m.top)/m.height*MAPH])}});
+mapWrap.querySelector(".fsclose").onclick=()=>fsExit();
+mapWrap.querySelector(".fsin").onclick=()=>setFsH(FS.h*1.5);
+mapWrap.querySelector(".fsout").onclick=()=>setFsH(FS.h/1.5);
+document.querySelectorAll(".mapopen").forEach(b=>b.onclick=()=>fsEnter());
+document.addEventListener("keydown",e=>{if(FS.on&&e.key==="Escape")fsExit()});
+addEventListener("resize",()=>{if(FS.on)setFsH(FS.h)});
+
+/* full map: places bar at the top and a details card for the chosen place */
+const fltHome={p:null,n:null};
+function fsCardShow(){if(!FS.on||!sel){$("fsCard").hidden=true;return}const c=EVENT.cats.find(x=>x.id===sel),t=cat(sel);$("fsBadge").className="badge "+(c.kind||"");$("fsBadge").textContent=c.label;$("fsName").textContent=t.name;$("fsDesc").textContent=t.desc;$("fsCard").hidden=false}
+function fsOnEnter(){const f=$("filters");fltHome.p=f.parentNode;fltHome.n=f.nextSibling;$("fsFilters").appendChild(f);fsCardShow()}
+function fsOnExit(){stopSpeech();if(fltHome.p)fltHome.p.insertBefore($("filters"),fltHome.n);$("fsCard").hidden=true}
+addEventListener("popstate",()=>{fsPop()});
+/* bottom tab bar */
+const smooth=()=>matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth";
+document.querySelectorAll(".tabbar button").forEach(b=>b.onclick=()=>{const t=b.dataset.tab;
+  if(t==="home") window.scrollTo({top:0,behavior:smooth()});
+  else if(t==="map") fsEnter();
+  else if(t==="places") $("catList").closest("section").scrollIntoView({behavior:smooth()});
+  else document.querySelector(".safety").closest("section").scrollIntoView({behavior:smooth()});});
+function tabMark(){const mid=innerHeight*.4,top=el=>el.getBoundingClientRect().top;let cur="home";
+  if(top($("mapTop"))<mid) cur="map"; if(top($("catList"))<mid) cur="places"; if(top(document.querySelector(".safety"))<mid) cur="help";
+  document.querySelectorAll(".tabbar button").forEach(b=>b.setAttribute("aria-current",String(b.dataset.tab===cur)))}
+let tabRaf=0; addEventListener("scroll",()=>{if(!tabRaf)tabRaf=requestAnimationFrame(()=>{tabRaf=0;tabMark()})},{passive:true});
+
 /* start: QR codes on posters can open a place directly, e.g. #c9 for toilets */
-buildPins();
+buildPins(); tabMark();
 const h0=location.hash.slice(1), startSel=EVENT.cats.some(c=>c.id===h0)?h0:null;
 if(!lang||!CONTENT[lang]){
   const g=(navigator.language||"en").slice(0,2); lang=CONTENT[g]?g:"en";
