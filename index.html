@@ -85,11 +85,12 @@ header.top h1{font-size:1.1rem;flex:1;min-width:0;white-space:nowrap;overflow:hi
 .mail code{font-family:inherit;user-select:all}
 
 /* quick find + filters */
-.qrow,.filters{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.qrow,.filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+@media (min-width:600px){.qrow,.filters{grid-template-columns:repeat(3,minmax(0,1fr))}}
 .qrow::-webkit-scrollbar,.filters::-webkit-scrollbar{display:none}
-.qbtn,.fchip{flex:none;display:inline-flex;align-items:center;gap:8px;min-height:46px;padding:0 14px 0 6px;border-radius:999px;border:1.5px solid var(--line);background:var(--panel);font-weight:700;white-space:nowrap}
-.fchip{min-height:40px;font-size:.88rem}
-.fchip.all{padding:0 16px}
+.qbtn,.fchip{min-width:0;display:flex;align-items:center;gap:8px;min-height:50px;padding:6px 10px 6px 6px;border-radius:14px;border:1.5px solid var(--line);background:var(--panel);font-weight:700;text-align:left;line-height:1.25;overflow-wrap:anywhere}
+.fchip{min-height:46px;font-size:.9rem}
+.fchip.all{grid-column:1/-1;justify-content:center;min-height:42px}
 .qbtn[aria-pressed="true"],.fchip[aria-pressed="true"]{background:var(--gold);border-color:var(--gold);color:#2B1700}
 .badge{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:var(--marigold);color:#2B1700;font-family:var(--font-display);font-weight:800;font-size:1rem;flex:none;line-height:1}
 .fchip .badge{width:28px;height:28px;font-size:.9rem}
@@ -205,9 +206,12 @@ button,a,.pin{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 .section,#mapTop,.hero{scroll-margin-top:64px}
 .fscard{background:var(--panel);border:1px solid var(--line);color:var(--ink)}
 .fscard p{color:var(--muted)}
-.fsfilters{position:absolute;left:0;right:0;top:calc(env(safe-area-inset-top,0px) + 62px);z-index:3;padding-left:max(10px,env(safe-area-inset-left,0px))}
-.fsfilters .filters{padding:0 10px 0 0}
-.fsfilters .fchip{box-shadow:0 2px 8px rgba(0,0,0,.35)}
+.fsfilters{position:absolute;left:0;right:0;top:calc(env(safe-area-inset-top,0px) + 62px);z-index:4;padding:0 max(10px,env(safe-area-inset-right,0px)) 0 max(10px,env(safe-area-inset-left,0px));display:grid;justify-items:start;gap:8px;pointer-events:none}
+.fsfilters>*{pointer-events:auto}
+.fslistbtn{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border-radius:999px;border:0;background:var(--gold);color:#2B1700;font-weight:800;box-shadow:0 2px 10px rgba(0,0,0,.4)}
+.fslistbtn svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round}
+.fspanel{width:100%;max-height:min(62vh,520px);overflow-y:auto;overscroll-behavior:contain;background:rgba(20,17,46,.97);border:1px solid var(--line);border-radius:16px;padding:10px;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.fspanel .filters{padding:0}
 .mapwrap.fs .compass{top:calc(env(safe-area-inset-top,0px) + 118px)}
 .pin::before{content:"";position:absolute;inset:-8px}
 .btn:active,.qbtn:active,.fchip:active,.hbtn:active,.cats button:active{transform:scale(.97)}
@@ -306,7 +310,7 @@ button,a,.pin{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
   <div class="fsui">
     <div class="fsbar"><button class="fsbtn fsclose" aria-label="Close map"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button><span class="fstitle" data-t="title"></span></div>
     <div class="fszoom"><button class="fsbtn fsin" aria-label="Zoom in"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button><button class="fsbtn fsout" aria-label="Zoom out"><svg viewBox="0 0 24 24"><path d="M5 12h14"/></svg></button></div>
-    <div class="fsfilters" id="fsFilters"></div>
+    <div class="fsfilters"><button class="fslistbtn" id="fsListBtn" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01"/></svg><span data-t="tabPlaces">Places</span></button><div class="fspanel" id="fsFilters" hidden></div></div>
     <div class="fscard" id="fsCard" hidden><span class="badge" id="fsBadge"></span><div><h3 id="fsName"></h3><p id="fsDesc"></p><button class="btn small" data-say="fs" aria-pressed="false">▶ Listen</button></div></div>
     <div class="fshint gone" data-t="fsHint"></div>
   </div>
@@ -721,7 +725,7 @@ function select(id,scrollPage,silent){
   const map=$("map"); map.classList.toggle("filtering",!!sel);
   document.querySelectorAll(".pin").forEach(p=>p.classList.toggle("on",p.dataset.id===sel));
   document.querySelectorAll(".fchip,.qbtn").forEach(b=>b.setAttribute("aria-pressed",String((b.dataset.id||null)===sel)));
-  if(!sel){ $("sel").hidden=true; $("fsCard").hidden=true; if(!silent) setHash(""); return }
+  if(!sel){ $("sel").hidden=true; $("fsCard").hidden=true; if(FS.on) fsList(false); if(!silent) setHash(""); return }
   const c=EVENT.cats.find(x=>x.id===sel), t=cat(sel);
   $("selBadge").className="badge "+(c.kind||""); $("selBadge").textContent=c.label;
   $("selName").textContent=t.name; $("selDesc").textContent=t.desc;
@@ -729,11 +733,10 @@ function select(id,scrollPage,silent){
   const im=$("selImg");
   if(c.photo){ im.hidden=false; im.alt=t.name; im.onerror=()=>{im.hidden=true}; im.src="photos/"+c.photo+".webp" } else im.hidden=true;
   $("sel").hidden=false;
-  const f=document.querySelector(`.fchip[data-id="${sel}"]`); f&&f.scrollIntoView({inline:"center",block:"nearest"});
   if(silent) return;
   const sc=$("mapScroll"), xs=c.pins.map(p=>p[0]), mid=(Math.min(...xs)+Math.max(...xs))/2;
   sc.scrollLeft=mid/MAPW*map.clientWidth-sc.clientWidth/2;
-  if(FS.on){const ys=c.pins.map(p=>p[1]);sc.scrollTop=(Math.min(...ys)+Math.max(...ys))/2/MAPH*map.clientHeight-sc.clientHeight/2;fsCardShow();return}
+  if(FS.on){fsList(false);const ys=c.pins.map(p=>p[1]);sc.scrollTop=(Math.min(...ys)+Math.max(...ys))/2/MAPH*map.clientHeight-sc.clientHeight/2;fsCardShow();return}
   if(scrollPage) $("mapTop").scrollIntoView({block:"start",behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
   setHash(sel);
 }
@@ -877,7 +880,9 @@ addEventListener("resize",()=>{if(FS.on)setFsH(FS.h)});
 /* full map: places bar at the top and a details card for the chosen place */
 const fltHome={p:null,n:null};
 function fsCardShow(){if(!FS.on||!sel){$("fsCard").hidden=true;return}const c=EVENT.cats.find(x=>x.id===sel),t=cat(sel);$("fsBadge").className="badge "+(c.kind||"");$("fsBadge").textContent=c.label;$("fsName").textContent=t.name;$("fsDesc").textContent=t.desc;$("fsCard").hidden=false}
-function fsOnEnter(){const f=$("filters");fltHome.p=f.parentNode;fltHome.n=f.nextSibling;$("fsFilters").appendChild(f);fsCardShow()}
+function fsList(open){$("fsFilters").hidden=!open;$("fsListBtn").setAttribute("aria-expanded",String(open))}
+$("fsListBtn").onclick=()=>fsList($("fsFilters").hidden);
+function fsOnEnter(){const f=$("filters");fltHome.p=f.parentNode;fltHome.n=f.nextSibling;$("fsFilters").appendChild(f);fsList(false);fsCardShow()}
 function fsOnExit(){stopSpeech();if(fltHome.p)fltHome.p.insertBefore($("filters"),fltHome.n);$("fsCard").hidden=true}
 addEventListener("popstate",()=>{fsPop()});
 /* bottom tab bar */
