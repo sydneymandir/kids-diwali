@@ -843,6 +843,45 @@ function net(){const on=navigator.onLine;$("net").textContent=ui(on?"ready":"off
 addEventListener("online",net); addEventListener("offline",net);
 addEventListener("hashchange",()=>{const h=location.hash.slice(1); if(EVENT.cats.some(c=>c.id===h)) select(h,true)});
 
+/* ===== Hidden usage counter: only numbers are sent (no names, no location, nothing personal).
+   Counts each opening of the guide and each phone once, in total and per day (Sydney date).
+   Works offline: counts wait on the phone and are sent when it has signal again.
+   Owner view: open the guide with #count at the end of the address. ===== */
+const CNT={base:"https://abacus.jasoncameron.dev/",ns:"sydneymandir-kdc"};
+function cntDay(){try{return new Intl.DateTimeFormat("en-CA",{timeZone:"Australia/Sydney",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date()).replace(/-/g,"")}catch(e){return new Date(Date.now()+11*3600e3).toISOString().slice(0,10).replace(/-/g,"")}}
+let cntBusy=false;
+async function cntFlush(){
+  if(cntBusy||!navigator.onLine) return; cntBusy=true;
+  try{ for(;;){
+    const q=store.get("kdc.cq",[]); if(!q.length) break; const k=q[0];
+    let ok=false; try{const r=await fetch(CNT.base+"hit/"+CNT.ns+"/"+k,{cache:"no-store"}); ok=r.ok}catch(e){}
+    if(!ok) break; const q2=store.get("kdc.cq",[]); const i=q2.indexOf(k); if(i>=0)q2.splice(i,1); store.set("kdc.cq",q2);
+  } } finally { cntBusy=false }
+}
+function cntVisit(){
+  if(/^#count/.test(location.hash)) return;
+  try{if(sessionStorage.getItem("kdc.seen"))return;sessionStorage.setItem("kdc.seen","1")}catch(e){}
+  const d=cntDay(), q=store.get("kdc.cq",[]);
+  q.push("opens","opens-"+d);
+  if(!store.get("kdc.dev",0)){q.push("phones");store.set("kdc.dev",1)}
+  if(store.get("kdc.devday","")!==d){q.push("phones-"+d);store.set("kdc.devday",d)}
+  store.set("kdc.cq",q.slice(-200)); cntFlush();
+}
+addEventListener("online",cntFlush);
+async function cntShow(){
+  const get=async k=>{try{const r=await fetch(CNT.base+"get/"+CNT.ns+"/"+k,{cache:"no-store"});return r.ok?(await r.json()).value:0}catch(e){return "–"}};
+  const d=cntDay(), ev="20261031";
+  const box=document.createElement("div");
+  box.style.cssText="position:fixed;inset:0;z-index:999;background:rgba(10,8,30,.96);color:#fff;display:grid;place-items:center;padding:20px;font:16px/1.4 system-ui,sans-serif";
+  box.innerHTML='<div style="max-width:420px;width:100%;background:#1D1944;border:1px solid #363070;border-radius:18px;padding:20px"><h2 style="margin:0 0 4px;color:#F8C24B">Kids Diwali guide usage</h2><p style="margin:0 0 14px;color:#BDB7DE;font-size:.85rem">Counts update when phones have signal. Refresh to update.</p><div id="cntRows">Loading…</div><button id="cntClose" style="margin-top:16px;width:100%;min-height:44px;border-radius:999px;border:0;background:#F8C24B;font-weight:800">Close</button></div>';
+  document.body.appendChild(box);
+  box.querySelector("#cntClose").onclick=()=>{box.remove();try{history.replaceState(null,"",location.pathname)}catch(e){}};
+  const [o,p,oe,pe,ot,pt]=await Promise.all(["opens","phones","opens-"+ev,"phones-"+ev,"opens-"+d,"phones-"+d].map(get));
+  const row=(t,a,b)=>'<div style="display:grid;grid-template-columns:1fr auto auto;gap:12px;padding:10px 0;border-top:1px solid #363070"><b>'+t+'</b><span>'+a+' opens</span><span>'+b+' phones</span></div>';
+  box.querySelector("#cntRows").innerHTML=row("Sat 31 Oct (event day)",oe,pe)+(d!==ev?row("Today",ot,pt):"")+row("All time",o,p);
+}
+if(/^#count/.test(location.hash)) setTimeout(cntShow,300); else setTimeout(cntVisit,800);
+addEventListener("hashchange",()=>{if(/^#count/.test(location.hash))cntShow()});
 if("serviceWorker" in navigator && location.protocol==="https:"){try{navigator.serviceWorker.register("sw.js").catch(()=>{})}catch(e){}}
 
 /* ===== Full-screen map: drag to move, pinch / double-tap / + − to zoom, phone Back closes it ===== */

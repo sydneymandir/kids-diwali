@@ -1,6 +1,6 @@
 // Saves the Kids Diwali guide on the visitor's phone the first time it opens,
 // so it keeps working with no signal at all on the day.
-const CACHE = 'kids-diwali-v11';            // bump this when content changes
+const CACHE = 'kids-diwali-v12';            // bump this when content changes
 const CORE  = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png',
                './kdc-logo.webp', './baps-logo.webp', './hero-fireworks.webp'];
 // sharper zoom map and photos: fetched in the background, never block the guide
@@ -23,7 +23,7 @@ const fromNet = (c, req, ms) => new Promise(res => {
   fetch(req).then(r => { if (r && r.ok) c.put(req, r.clone()); clearTimeout(t); res(r); }).catch(() => { clearTimeout(t); res(null); });
 });
 self.addEventListener('fetch', e => {
-  if (e.request.method !== 'GET') return;
+  if (e.request.method !== 'GET' || new URL(e.request.url).hostname === 'abacus.jasoncameron.dev') return;   // the usage counter goes straight to the internet
   e.respondWith(caches.open(CACHE).then(async c => {
     if (e.request.mode === 'navigate') {
       return (await fromNet(c, e.request, 3000)) || (await c.match(e.request, { ignoreSearch: true })) || (await c.match('./index.html')) || (await c.match('./')) || Response.error();
