@@ -34,7 +34,7 @@ p{margin:0 0 10px;font-size:1.05rem;line-height:1.5;color:#E9E5FF}
 </div></main>
 <script>
 /* remove the old offline guide (and its saved voice files) from this phone */
-try{navigator.serviceWorker&&navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister()))}catch(e){}
+try{navigator.serviceWorker&&navigator.serviceWorker.getRegistrations().then(rs=>rs.filter(r=>r.scope.indexOf("/kids-diwali/")>=0).forEach(r=>r.unregister()))}catch(e){}   /* only the Kids Diwali one; the campus tour and Annakut guides keep theirs */
 try{caches&&caches.keys().then(ks=>ks.filter(k=>k.indexOf("kids-diwali-")===0).forEach(k=>caches.delete(k)))}catch(e){}
 try{["kdc.cq","kdc.dev","kdc.devday"].forEach(k=>localStorage.removeItem(k))}catch(e){}
 /* then go to the BAPS Sydney page */
